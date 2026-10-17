@@ -4,9 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10121a">
   <title>Aqui Está Seu Conteúdo</title>
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -16,9 +20,9 @@
     }
 
     header {
-      padding: 25px 16px;
+      padding: 28px 16px;
       text-align: center;
-      background: linear-gradient(135deg, #0759d6, #092c70);
+      background: linear-gradient(135deg, #087bff, #092c70);
     }
 
     header h1 {
@@ -47,6 +51,7 @@
       background: #1b1f2b;
       color: white;
       font-size: 16px;
+      outline-color: #1680ff;
     }
 
     .grade {
@@ -60,18 +65,23 @@
       border-radius: 12px;
       background: #1b1f2b;
       border: 1px solid #303548;
+      min-width: 0;
     }
 
     .capa {
+      display: block;
       width: 100%;
       aspect-ratio: 2 / 3;
+      object-fit: cover;
+      background: linear-gradient(145deg, #0759d6, #171b31);
+    }
+
+    .capa-provisoria {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(145deg, #0759d6, #171b31);
-      color: #fff;
-      font-size: 38px;
-      object-fit: cover;
+      color: white;
+      font-size: 42px;
     }
 
     .info {
@@ -99,10 +109,13 @@
     }
 
     @media (min-width: 650px) {
-      .grade { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .grade {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
     }
   </style>
 </head>
+
 <body>
   <header>
     <h1>🎬 Aqui Está Seu Conteúdo</h1>
@@ -130,7 +143,7 @@
       {
         nome: "Herdeira Verdadeira vs Rainha Falsa",
         preco: "R$ 5,00",
-        capa: ""
+        capa: "./images.jpg"
       }
     ];
 
@@ -140,8 +153,8 @@
     function mostrarFilmes() {
       const termo = busca.value.toLocaleLowerCase("pt-BR");
 
-      const encontrados = filmes.filter(f =>
-        f.nome.toLocaleLowerCase("pt-BR").includes(termo)
+      const encontrados = filmes.filter(filme =>
+        filme.nome.toLocaleLowerCase("pt-BR").includes(termo)
       );
 
       catalogo.replaceChildren();
@@ -150,19 +163,20 @@
         const card = document.createElement("article");
         card.className = "filme";
 
-        let capa;
+        const capa = document.createElement("img");
+        capa.className = "capa";
+        capa.src = filme.capa;
+        capa.alt = "Capa de " + filme.nome;
+        capa.loading = "lazy";
 
-        if (filme.capa) {
-          capa = document.createElement("img");
-          capa.src = filme.capa;
-          capa.alt = "Capa de " + filme.nome;
-        } else {
-          capa = document.createElement("div");
-          capa.textContent = "🎬";
-          capa.setAttribute("aria-label", "Capa ainda não adicionada");
-        }
-
-        capa.classList.add("capa");
+        capa.onerror = function () {
+          const provisoria = document.createElement("div");
+          provisoria.className = "capa capa-provisoria";
+          provisoria.textContent = "🎬";
+          provisoria.setAttribute("role", "img");
+          provisoria.setAttribute("aria-label", "Capa indisponível");
+          this.replaceWith(provisoria);
+        };
 
         const info = document.createElement("div");
         info.className = "info";
