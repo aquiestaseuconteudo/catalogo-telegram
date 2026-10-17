@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aqui Está Seu Conteúdo</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #10121a;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      padding: 25px 16px;
+      text-align: center;
+      background: linear-gradient(135deg, #0759d6, #092c70);
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 25px;
+    }
+
+    header p {
+      margin: 0;
+      color: #d9e8ff;
+      font-size: 14px;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px 14px;
+    }
+
+    .busca {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 22px;
+      border: 1px solid #34394b;
+      border-radius: 10px;
+      background: #1b1f2b;
+      color: white;
+      font-size: 16px;
+    }
+
+    .grade {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .filme {
+      overflow: hidden;
+      border-radius: 12px;
+      background: #1b1f2b;
+      border: 1px solid #303548;
+    }
+
+    .capa {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #0759d6, #171b31);
+      color: #fff;
+      font-size: 38px;
+      object-fit: cover;
+    }
+
+    .info {
+      padding: 12px;
+    }
+
+    .info h2 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .preco {
+      color: #75aaff;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .rodape {
+      text-align: center;
+      color: #969db0;
+      padding: 28px 12px;
+      font-size: 12px;
+    }
+
+    @media (min-width: 650px) {
+      .grade { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎬 Aqui Está Seu Conteúdo</h1>
+    <p>Seu catálogo de conteúdo em um só lugar!</p>
+  </header>
+
+  <main>
+    <input
+      class="busca"
+      id="busca"
+      type="search"
+      placeholder="🔎 Pesquisar título..."
+      aria-label="Pesquisar títulos"
+    >
+
+    <section class="grade" id="catalogo"></section>
+  </main>
+
+  <footer class="rodape">
+    Aqui Está Seu Conteúdo • Catálogo oficial
+  </footer>
+
+  <script>
+    const filmes = [
+      {
+        nome: "Herdeira Verdadeira vs Rainha Falsa",
+        preco: "R$ 5,00",
+        capa: ""
+      }
+    ];
+
+    const catalogo = document.getElementById("catalogo");
+    const busca = document.getElementById("busca");
+
+    function mostrarFilmes() {
+      const termo = busca.value.toLocaleLowerCase("pt-BR");
+
+      const encontrados = filmes.filter(f =>
+        f.nome.toLocaleLowerCase("pt-BR").includes(termo)
+      );
+
+      catalogo.replaceChildren();
+
+      encontrados.forEach(filme => {
+        const card = document.createElement("article");
+        card.className = "filme";
+
+        let capa;
+
+        if (filme.capa) {
+          capa = document.createElement("img");
+          capa.src = filme.capa;
+          capa.alt = "Capa de " + filme.nome;
+        } else {
+          capa = document.createElement("div");
+          capa.textContent = "🎬";
+          capa.setAttribute("aria-label", "Capa ainda não adicionada");
+        }
+
+        capa.classList.add("capa");
+
+        const info = document.createElement("div");
+        info.className = "info";
+
+        const nome = document.createElement("h2");
+        nome.textContent = filme.nome;
+
+        const preco = document.createElement("div");
+        preco.className = "preco";
+        preco.textContent = filme.preco;
+
+        info.append(nome, preco);
+        card.append(capa, info);
+        catalogo.append(card);
+      });
+
+      if (encontrados.length === 0) {
+        const vazio = document.createElement("p");
+        vazio.textContent = "Nenhum título encontrado.";
+        catalogo.append(vazio);
+      }
+    }
+
+    busca.addEventListener("input", mostrarFilmes);
+    mostrarFilmes();
+  </script>
+</body>
+</html>
